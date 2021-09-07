@@ -13,25 +13,23 @@ export default function Main() {
     departure: 'ICN'
   })
   const [flightList, setFlightList] = useState(json)
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(async() => {
+    setIsLoading(true)
+    setFlightList(await getFlight(condition))
+    setIsLoading(false)
+  }, [condition]); //검색조건이 바뀔때마다 useEffect 실행.
+  
 
   const search = ({ departure, destination }) => {
     if (condition.departure !== departure || condition.destination !== destination) {
       console.log('condition 상태를 변경시킵니다')
-
       // TODO:
+      setCondition({departure:departure, destination:destination});
     }
   }
 
-  const filterByCondition = (flight) => {
-    let pass = true;
-    if (condition.departure) {
-      pass = pass && flight.departure === condition.departure
-    }
-    if (condition.destination) {
-      pass = pass && flight.destination === condition.destination
-    }
-    return pass;
-  }
 
   global.search = search // 실행에는 전혀 지장이 없지만, 테스트를 위해 필요한 코드입니다. 이 코드는 지우지 마세요!
 
@@ -46,7 +44,7 @@ export default function Main() {
         <h1>
           여행가고 싶을 땐, States Airline
         </h1>
-        <Search />
+        <Search onSearch={search}/>
         <div className="table">
           <div className="row-header">
             <div className="col">출발</div>
@@ -55,7 +53,7 @@ export default function Main() {
             <div className="col">도착 시각</div>
             <div className="col"></div>
           </div>
-          <FlightList list={flightList.filter(filterByCondition)} />
+          {isLoading ? <LoadingIndicator /> : <FlightList list={flightList} />}
         </div>
 
         <div className="debug-area">

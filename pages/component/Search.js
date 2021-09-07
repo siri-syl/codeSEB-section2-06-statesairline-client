@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-function Search() {
+function Search({onSearch}) {
   const [textDestination, setTextDestination] = useState('')
 
   const handleChange = (e) => {
@@ -15,8 +15,10 @@ function Search() {
 
   const handleSearchClick = () => {
     console.log('검색 버튼을 누르거나, 엔터를 치면 search 함수가 실행됩니다')
-
+    let temp="ICN";
+    let temptext = textDestination;
     // TODO:
+    onSearch({departure:temp, destination:temptext});
   }
 
   return <fieldset>
